@@ -1,0 +1,20 @@
+{
+	"name": "webnula/webnula",
+	"description": "WebNula - web content system management",
+	"keywords": ["webnula", "framework", "yii", "cms"],
+	"homepage": "http://webnula.very-good.ru",
+	"type": "project",
+	"license": ["BSD-3-Clause", "GPL-3.0+"],
+	"version": "1.0.0-dev",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require": {
+		"php": ">=5.3.0",
+		"webnula/kernel": ">=1.0.0@dev"
+	},
+	"scripts": {
+        "post-create-project-cmd": [
+            "php frontend/yiic.php postinstall"
+        ]
+    }
+}
