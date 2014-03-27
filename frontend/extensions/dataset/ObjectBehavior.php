@@ -1,12 +1,9 @@
 <?php
 /**
- * @author
- * @version
- * @see
- * @link
- * @license
+ * @author  Martyushev Dmitry (dangozero@gmail.com)
+ * @copyright Copyright (c) 2014, dangozero
+ * @license LICENSE
  */
-
 namespace application\extensions\dataset;
 
 use \CHtml;

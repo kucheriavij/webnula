@@ -1,11 +1,8 @@
 <?php
 /**
- * 
- *
- * @author 
- * @link 
- * @copyright 
- * @license 
+ * @author  Martyushev Dmitry (dangozero@gmail.com)
+ * @copyright Copyright (c) 2014, dangozero
+ * @license LICENSE
  */
 
 namespace application\extensions;
