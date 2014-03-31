@@ -81,7 +81,20 @@ class FileBehavior extends DatasetActiveBehavior {
 	
 	public function delete(Type $type)
 	{
+		$owner = $this->getOwner();
+		$group_id = $owner[$type->name];
 		
+		$records = Media::model()->findAll(array(
+			'condition' => 'group_id = ?',
+			'params' => array($group_id)
+		));
+		
+		$webroot = Yii::getPathOfAlias('webroot');
+		foreach( $records as $record ) {
+			$file = $record->file;
+			CFileHelper::removeDirectory( $webroot . dirname($file['url']) );
+			$record->delete();
+		}
 	}
 	
 	public function cleanUp(Type $type, array $params = array())

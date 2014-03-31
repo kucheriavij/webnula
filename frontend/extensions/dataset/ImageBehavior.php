@@ -83,11 +83,38 @@ class ImageBehavior extends DatasetActiveBehavior {
 	
 	public function delete(Type $type)
 	{
-		// NOTHING
+		$owner = $this->getOwner();
+		$group_id = $owner[$type->name];
+		
+		$records = Media::model()->findAll(array(
+			'condition' => 'group_id = ?',
+			'params' => array($group_id)
+		));
+		
+		$webroot = Yii::getPathOfAlias('webroot');
+		foreach( $records as $record ) {
+			$file = $record->file;
+			CFileHelper::removeDirectory( $webroot . dirname($file['url']) );
+			$record->delete();
+		}
 	}
 	
 	public function cleanUp(Type $type, array $params = array())
 	{
-		// NOTHING
+		$owner = $this->getOwner();
+		$group_id = $owner[$type->name];
+		
+		$records = Media::model()->findAll(array(
+			'condition' => 'group_id = ?',
+			'params' => array($group_id)
+		));
+		
+		$webroot = Yii::getPathOfAlias('webroot');
+		foreach( $records as $record ) {
+			foreach( Yii::app()->params->sizes as $name => $size ) {
+				$uri = rawurldecode($record->file['url']);
+				CFileHelper::removeDirectory( $webroot . dirname($uri) . '/'. $name );
+			}
+		}
 	}
 }
