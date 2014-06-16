@@ -6,7 +6,9 @@
  */
 namespace application\extensions\dataset;
 
-use \CDbCriteria;
+use CDbCriteria;
+use Yii;
+use CFileHelper;
 
 use kernel\storage\Type;
 use kernel\storage\Media;
@@ -17,7 +19,7 @@ use kernel\components\DatasetActiveBehavior;
 
 class ImageBehavior extends DatasetActiveBehavior {
 	private $_files = array();
-	
+
 	public function createCriteria($condition='',$params=array())
 	{
 		if(is_array($condition))
@@ -32,7 +34,7 @@ class ImageBehavior extends DatasetActiveBehavior {
 		}
 		return $criteria;
 	}
-	
+
 	protected function images($type, $group_id, $params = array())
 	{
 		if(isset($params['criteria']))
@@ -45,8 +47,8 @@ class ImageBehavior extends DatasetActiveBehavior {
 		$criteria->compare('group_id', $group_id);
 		$criteria->compare('kind', 'images');
 		$criteria->order = 'sort ASC';
-		
-		if( !isset($this->_files[$group_id]) ) 
+
+		if( !isset($this->_files[$group_id]) )
 		{
 			$this->_files[$group_id] = array();
 			foreach( Media::model()->findAll($criteria) as $media )
@@ -56,7 +58,7 @@ class ImageBehavior extends DatasetActiveBehavior {
 		}
 		return $this->_files[$group_id];
 	}
-	
+
 	public function valueOf(Type $type, array $params = array())
 	{
 		$owner = $this->getOwner();
@@ -64,12 +66,12 @@ class ImageBehavior extends DatasetActiveBehavior {
 			return $this->images($type, $owner->{$type->name}, $params);
 		return array();
 	}
-	
+
 	public function store(Type $type)
 	{
 		$owner = $this->getOwner();
 		$group_id = $owner[$type->name];
-		
+
 		if(isset($_POST['Media'][$group_id]))
 		{
 			foreach( $_POST['Media'][$group_id] as $id => $attributes)
@@ -80,17 +82,17 @@ class ImageBehavior extends DatasetActiveBehavior {
 			}
 		}
 	}
-	
+
 	public function delete(Type $type)
 	{
 		$owner = $this->getOwner();
 		$group_id = $owner[$type->name];
-		
+
 		$records = Media::model()->findAll(array(
 			'condition' => 'group_id = ?',
 			'params' => array($group_id)
 		));
-		
+
 		$webroot = Yii::getPathOfAlias('webroot');
 		foreach( $records as $record ) {
 			$file = $record->file;
@@ -98,17 +100,17 @@ class ImageBehavior extends DatasetActiveBehavior {
 			$record->delete();
 		}
 	}
-	
+
 	public function cleanUp(Type $type, array $params = array())
 	{
 		$owner = $this->getOwner();
 		$group_id = $owner[$type->name];
-		
+
 		$records = Media::model()->findAll(array(
 			'condition' => 'group_id = ?',
 			'params' => array($group_id)
 		));
-		
+
 		$webroot = Yii::getPathOfAlias('webroot');
 		foreach( $records as $record ) {
 			foreach( Yii::app()->params->sizes as $name => $size ) {
